@@ -17,9 +17,7 @@
       --border-soft: #3a3a3d;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -31,7 +29,7 @@
 
     .page {
       min-height: 100vh;
-      padding: 12px 12px 70px; /* bottom padding for sticky footer */
+      padding: 12px 12px 70px;
     }
 
     h1 {
@@ -42,6 +40,8 @@
 
     .top-bar {
       margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-soft);
     }
 
     .top-row {
@@ -75,9 +75,7 @@
     }
 
     @media (max-width: 800px) {
-      .match-grid {
-        grid-template-columns: 1fr;
-      }
+      .match-grid { grid-template-columns: 1fr; }
     }
 
     .game-card {
@@ -115,11 +113,6 @@
     .name-label {
       font-weight: 500;
       color: var(--text-muted);
-    }
-
-    .name-value {
-      font-weight: 500;
-      text-align: right;
     }
 
     .name-input-row {
@@ -201,10 +194,6 @@
       cursor: pointer;
     }
 
-    .reset-btn:hover {
-      background: #7a2222;
-    }
-
     .footer-bar {
       position: fixed;
       left: 0;
@@ -220,55 +209,84 @@
       z-index: 50;
     }
 
-    .footer-label {
-      color: var(--text-muted);
+    .footer-label { color: var(--text-muted); font-size: 13px; }
+    .footer-value { font-weight: 600; color: var(--text-main); }
+    .footer-value span { color: var(--accent); }
+
+    /* NEW: hide/show setup */
+    .hidden { display: none !important; }
+
+    .setup-toggle-btn {
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: var(--bg-header);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
       font-size: 13px;
+      cursor: pointer;
     }
 
-    .footer-value {
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .footer-value span {
-      color: var(--accent);
+    .setup-floating-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: var(--bg-header);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      z-index: 2000;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
   </style>
 </head>
+
 <body>
   <div class="page">
-    <div class="top-bar">
-      <h1>Matchboard V8 – Cradley Heath SSC</h1>
 
-      <div class="top-row">
-        <div>
-          <label for="formatSelect">Match format</label>
-          <select id="formatSelect">
-            <option value="6">6 Games</option>
-            <option value="8">8 Games</option>
-          </select>
+    <!-- SETUP WRAPPER -->
+    <div id="setupWrapper">
+      <div class="top-bar">
+        <h1>Matchboard V8 – Cradley Heath SSC</h1>
+
+        <div class="top-row">
+          <div>
+            <label for="formatSelect">Match format</label>
+            <select id="formatSelect">
+              <option value="6">6 Games</option>
+              <option value="8">8 Games</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="leagueSelect">League</label>
+            <select id="leagueSelect"></select>
+          </div>
+
+          <div>
+            <label for="teamSelect">Team</label>
+            <select id="teamSelect"></select>
+          </div>
+
+          <div>
+            <label for="greenSelect">Green / Venue</label>
+            <select id="greenSelect">
+              <option value="">Not set</option>
+              <option value="Home">Home Green</option>
+              <option value="Away">Away Green</option>
+            </select>
+          </div>
         </div>
 
-        <div>
-          <label for="leagueSelect">League</label>
-          <select id="leagueSelect"></select>
-        </div>
-
-        <div>
-          <label for="teamSelect">Team</label>
-          <select id="teamSelect"></select>
-        </div>
-
-        <div>
-          <label for="greenSelect">Green / Venue</label>
-          <select id="greenSelect">
-            <option value="">Not set</option>
-            <option value="Home">Home Green</option>
-            <option value="Away">Away Green</option>
-          </select>
-        </div>
+        <button id="hideSetupBtn" class="setup-toggle-btn">Hide Setup</button>
       </div>
     </div>
+
+    <!-- FLOATING SHOW BUTTON -->
+    <button id="showSetupBtn" class="setup-floating-btn hidden">Show Setup</button>
 
     <div id="matchGrid" class="match-grid"></div>
 
