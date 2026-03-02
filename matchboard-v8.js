@@ -1,4 +1,4 @@
-// Simple league/team lists (can be expanded later)
+// Simple league/team lists
 const leagues = ["Dudley", "Oldbury", "Smethwick", "Kingswinford"];
 const teams = {
   "Dudley": ["Senior A", "Senior B", "Senior C", "Senior D", "Ladies", "Team A", "Team B"],
@@ -8,7 +8,7 @@ const teams = {
 };
 
 let currentGameCount = 6;
-let gameState = []; // one entry per game: {homeScore, awayScore}
+let gameState = [];
 
 function initMatchboard() {
   initSelectors();
@@ -64,7 +64,6 @@ function buildGames(count) {
     const body = document.createElement("div");
     body.className = "game-body";
 
-    // Names row (labels)
     const nameRow = document.createElement("div");
     nameRow.className = "name-row";
     nameRow.innerHTML = `
@@ -73,7 +72,6 @@ function buildGames(count) {
     `;
     body.appendChild(nameRow);
 
-    // Name inputs
     const nameInputRow = document.createElement("div");
     nameInputRow.className = "name-input-row";
     nameInputRow.innerHTML = `
@@ -82,7 +80,6 @@ function buildGames(count) {
     `;
     body.appendChild(nameInputRow);
 
-    // Score row
     const scoreRow = document.createElement("div");
     scoreRow.className = "score-row";
     scoreRow.innerHTML = `
@@ -97,7 +94,6 @@ function buildGames(count) {
     `;
     body.appendChild(scoreRow);
 
-    // Running total
     const running = document.createElement("div");
     running.className = "running-total";
     running.innerHTML = `Running total: <span>0 – 0 (Level)</span>`;
@@ -106,21 +102,20 @@ function buildGames(count) {
     card.appendChild(body);
     grid.appendChild(card);
 
-    // Attach handlers for this game
     const homeInput = scoreRow.querySelectorAll("input")[0];
     const awayInput = scoreRow.querySelectorAll("input")[1];
 
     homeInput.addEventListener("input", () => {
-      onScoreChange(i - 1, homeInput, awayInput, running, card, true);
+      onScoreChange(i - 1, homeInput, awayInput, running, card);
     });
 
     awayInput.addEventListener("input", () => {
-      onScoreChange(i - 1, homeInput, awayInput, running, card, false);
+      onScoreChange(i - 1, homeInput, awayInput, running, card);
     });
   }
 }
 
-function onScoreChange(index, homeInput, awayInput, runningEl, card, isHomeChange) {
+function onScoreChange(index, homeInput, awayInput, runningEl, card) {
   let h = parseInt(homeInput.value || "0", 10);
   let a = parseInt(awayInput.value || "0", 10);
 
@@ -142,11 +137,7 @@ function onScoreChange(index, homeInput, awayInput, runningEl, card, isHomeChang
 
 function updateGameRunningTotal(h, a, runningEl) {
   const diff = h - a;
-  let diffText;
-  if (diff > 0) diffText = `(+${diff})`;
-  else if (diff < 0) diffText = `(${diff})`;
-  else diffText = `(Level)`;
-
+  let diffText = diff > 0 ? `(+${diff})` : diff < 0 ? `(${diff})` : `(Level)`;
   runningEl.innerHTML = `Running total: <span>${h} – ${a} ${diffText}</span>`;
 }
 
@@ -158,11 +149,8 @@ function updateGameWinner(card, h, a) {
   homeInput.classList.remove("winner-home");
   awayInput.classList.remove("winner-away");
 
-  if (h === 21 && a < 21) {
-    homeInput.classList.add("winner-home");
-  } else if (a === 21 && h < 21) {
-    awayInput.classList.add("winner-away");
-  }
+  if (h === 21 && a < 21) homeInput.classList.add("winner-home");
+  else if (a === 21 && h < 21) awayInput.classList.add("winner-away");
 }
 
 function updateAggregate() {
@@ -175,13 +163,10 @@ function updateAggregate() {
   });
 
   const diff = totalHome - totalAway;
-  let diffText;
-  if (diff > 0) diffText = `(+${diff})`;
-  else if (diff < 0) diffText = `(${diff})`;
-  else diffText = `(Level)`;
+  let diffText = diff > 0 ? `(+${diff})` : diff < 0 ? `(${diff})` : `(Level)`;
 
-  const aggEl = document.getElementById("aggregateDisplay");
-  aggEl.innerHTML = `${totalHome} – ${totalAway} <span>${diffText}</span>`;
+  document.getElementById("aggregateDisplay").innerHTML =
+    `${totalHome} – ${totalAway} <span>${diffText}</span>`;
 }
 
 function attachGlobalHandlers() {
@@ -191,4 +176,24 @@ function attachGlobalHandlers() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", initMatchboard);
+/* NEW: setup hide/show controls */
+function setupToggleControls() {
+  const wrapper = document.getElementById("setupWrapper");
+  const hideBtn = document.getElementById("hideSetupBtn");
+  const showBtn = document.getElementById("showSetupBtn");
+
+  hideBtn.addEventListener("click", () => {
+    wrapper.classList.add("hidden");
+    showBtn.classList.remove("hidden");
+  });
+
+  showBtn.addEventListener("click", () => {
+    wrapper.classList.remove("hidden");
+    showBtn.classList.add("hidden");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initMatchboard();
+  setupToggleControls();
+});
